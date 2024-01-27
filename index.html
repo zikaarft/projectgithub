@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Analisis Ancaman Terjadinya Bencana Banjir di Kecamatan Berbah Kabupaten Sleman</title>
+    <link rel="stylesheet" href="library/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="library/leaflet/leaflet.js"></script>
+    <script src="library/leaflet-providers-master/leaflet-providers.js"></script>
+    <script src="library/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="map">
+        <script>
+            var map = L.map('map').setView([-7.804967, 110.449377], 13);
+
+            var baseLayers = {
+                'Esri WorldTopoMap': L.tileLayer.provider('Esri.WorldTopoMap'),
+                'Esri WorldImagery': L.tileLayer.provider('Esri.WorldImagery').addTo(map),
+                'OSM Default': L.tileLayer.provider('OpenStreetMap.DE'),
+                'OSM France': L.tileLayer.provider('OpenStreetMap.France')
+            };
+
+
+            /* Memanggil Layer Rawan Banjir */
+            var  Ancaman Bencana Banjir = L.geoJson(null, {
+                style: function(feature) {
+                    return {
+                        color: "black",
+                        fillColor: Kerawanan[feature.properties.Kerawanan],
+                        weight: 0.3,
+                        opacity: 0,
+                        fillOpacity: 0.7
+                    };
+                },
+                onEachFeature: function( feature, layer ){
+                    layer.bindPopup(
+                        "Kerawanan Banjir : " + "<left>" + feature.properties.Kerawanan + "</left>" + "<br>" +
+                        "Luas :" + "<left>" + feature.properties.Shape_Area + "</left>" + " m2"
+                        )
+                }
+            });
+            $.getJSON("data/Rawan_Banjir_Semarang_Geo.json", function(data) {
+                AreaRawanBanjir.addData(data);
+            });
+
+			/* Merubah Tampilan Warna Berdasar Atribut Klas Banjir */
+			var Kerawanan = {
+				"Aman":"#d3f0f2",
+				"Cukup Aman":"#9bd1e8",
+				"Rawan":"#1326d1",
+				"Sangat Rawan":"#0b0a5c"
+			};
+
+            var mapLayers = {
+                'Ancaman Bencana Banjir': AncamanBencanaBanjir
+            };
+
+            L.control.layers(baseLayers, mapLayers).addTo(map);
+        </script>
+    </div>
+</body>
+
+</html>
